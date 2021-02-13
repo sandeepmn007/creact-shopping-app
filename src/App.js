@@ -2,6 +2,7 @@ import React from 'react';
 import data from './data.json';
 import Product from './components/Product';
 import Filter from './components/Filter';
+import Cart from './components/Cart';
 
 
 // feature-1
@@ -14,7 +15,32 @@ class App extends React.Component {
   state = {
     products: data.products,
     size: '',
-    sort: ''
+    sort: '',
+    cartItems: []
+  }
+
+  addToCartHander = (products) => {
+    const cartItems = [...this.state.cartItems];
+    let alreadyInCart = false
+    cartItems.forEach(item => {
+      if (products._id === item._id) {
+        item.count++;
+        alreadyInCart = true
+      }
+    })
+    if (!alreadyInCart) {
+      cartItems.push({ ...products, count: 1 })
+    }
+    this.setState({
+      cartItems
+    })
+  }
+
+  removeFromCart = (products) => {
+    const cartItems = [...this.state.cartItems];
+    this.setState({
+      cartItems: cartItems.filter(flt => products._id !== flt._id)
+    })
   }
 
   filterProducts = (e) => {
@@ -73,11 +99,11 @@ class App extends React.Component {
                 filterProducts={this.filterProducts}
                 sortProducts={this.sortProducts}
               />
-              <Product products={this.state.products} />
+              <Product addToCart={this.addToCartHander} products={this.state.products} />
             </div>
             <div className="sidebar">
-              Cart Items
-              </div>
+              <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
+            </div>
           </div>
         </main>
         <footer>
