@@ -16,7 +16,7 @@ class App extends React.Component {
     products: data.products,
     size: '',
     sort: '',
-    cartItems: []
+    cartItems: localStorage.getItem('cartItems') ? JSON.parse(localStorage.getItem('cartItems')) : []
   }
 
   addToCartHander = (products) => {
@@ -34,6 +34,7 @@ class App extends React.Component {
     this.setState({
       cartItems
     })
+    localStorage.setItem("cartItems", JSON.stringify(cartItems))
   }
 
   removeFromCart = (products) => {
@@ -41,6 +42,7 @@ class App extends React.Component {
     this.setState({
       cartItems: cartItems.filter(flt => products._id !== flt._id)
     })
+    localStorage.setItem('cartItems', JSON.stringify(cartItems.filter(flt => products._id !== flt._id)))
   }
 
   filterProducts = (e) => {
@@ -83,6 +85,11 @@ class App extends React.Component {
     }));
   }
 
+  createOrder = (order) => {
+    alert('Need to save order for ' + order.name)
+  }
+
+
   render() {
     return (
       <div className="grid-container">
@@ -102,7 +109,7 @@ class App extends React.Component {
               <Product addToCart={this.addToCartHander} products={this.state.products} />
             </div>
             <div className="sidebar">
-              <Cart cartItems={this.state.cartItems} removeFromCart={this.removeFromCart} />
+              <Cart cartItems={this.state.cartItems} createOrder={this.createOrder} removeFromCart={this.removeFromCart} />
             </div>
           </div>
         </main>
